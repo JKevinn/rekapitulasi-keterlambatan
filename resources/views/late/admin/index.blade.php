@@ -8,6 +8,7 @@
         <div class="alert alert-warning">{{ Session::get('deleted') }}</div>
     @endif
     <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+      <a href="{{ route('late.admin.export-excel') }}" class="bg-green-400 hover:bg-green-500 underline font-medium py-2 px-4 rounded">Export Excel .xls</a>
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab"
             data-tabs-toggle="#default-tab-content" role="tablist">
             <li class="me-2" role="presentation">
@@ -46,10 +47,9 @@
                                         <th scope="col" class="rounded-tl-lg text-sm font-medium px-6 py-4">NO</th>
                                         <th scope="col" class="rounded-tl-lg text-sm font-medium px-6 py-4">NAMA</th>
                                         <th scope="col" class="text-sm font-medium px-6 py-4">TANGGAL</th>
-                                        <th scope="col" class="text-sm font-medium px-6 py-4">IMAGE</th>
                                         <th scope="col" class="text-sm font-medium px-6 py-4">INFORMASI</th>
                                         <th scope="col" class="rounded-tr-lg text-sm font-medium px-6 py-4">
-                                          <a href="{{ route('late.create')}}" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">TAMBAH</a>
+                                          <a href="{{ route('late.admin.create')}}" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">TAMBAH</a>
                                         </th>
                                       </tr>
                                     </thead>
@@ -63,12 +63,11 @@
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item->student->name }}</td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item['date_time_late'] }}</td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item['information'] }}</td>
-                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500"><img src="{{ asset('storage' . $item['bukti']) }}" alt=""></td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-right flex">
                                           <div>
-                                            <a href="{{ route('late.edit', $item['id']) }}" class="font-medium text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Edit</a>
+                                            <a href="{{ route('late.admin.edit', $item['id']) }}" class="font-medium text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Edit</a>
                                           </div>
-                                          <form action="{{ route('late.delete', $item['id']) }}" method="post">
+                                          <form action="{{ route('late.admin.delete', $item['id']) }}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="font-medium text-red-600 hover:text-red-700 focus:text-red-700 active:text-red-800 transition duration-300 ease-in-out">Hapus</button>
@@ -82,6 +81,11 @@
                                     </tbody>
                                   </table>
                                 </div>
+                                <div class="d-flex justify-content-end">
+                                  @if ($lates->count())
+                                      {{$lates->links()}}
+                                  @endif
+                              </div>
                               </div>
                             </div>
                           </div>
@@ -116,35 +120,47 @@
                                         <th scope="col" class="rounded-tr-lg text-sm font-medium px-6 py-4">
                                         </th>
                                         <th scope="col" class="rounded-tr-lg text-sm font-medium px-6 py-4">
-                                          <a href="{{ route('late.create')}}" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">TAMBAH</a>
                                         </th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      @foreach ($lates as $item)
+                                      @php
+                                          $nomor = 1;
+                                      @endphp
+                                      @foreach ($latesgroup as $item)
+                                      @php
+                                          $countlate = $item->where('student_id', $item['student_id'])->count();
+                                      @endphp
                                       <tr class="border-b">
-                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $no }}</td>
+                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $nomor }}</td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item->student->nis }}</td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item->student->name }}</td>
-                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500"></td>
-                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">
+                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $countlate }}</td>
+                                        <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500"> 
                                           <div>
-                                            <a href="{{ route('late.edit', $item['id']) }}" class="font-small text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Lihat</a>
-                                          </div>  
+                                            <a href="{{ route('late.admin.show', $item['student_id']) }}" class="font-small text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Lihat</a>
+                                          </div>
                                         </td>
                                         <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-right flex">
-                                          {{-- <div>
-                                            <a href="{{ route('late.edit', $item['id']) }}" class="font-medium text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Edit</a>
-                                          </div> --}}
+                                          @if ($countlate >= 3)
+                                          <div>
+                                            <a href="{{ route('late.admin.download', $item['student_id']) }}" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">Cetak Surat Pernyataan</a>
+                                          </div>
+                                          @endif
                                         </td>
                                       </tr>
                                       @php
-                                          $no++;
+                                          $nomor++;
                                       @endphp
                                       @endforeach
                                     </tbody>
                                   </table>
                                 </div>
+                                <div class="d-flex justify-content-end">
+                                  @if ($latesgroup->count())
+                                      {{$latesgroup->links()}}
+                                  @endif
+                              </div>
                               </div>
                             </div>
                           </div>
@@ -155,60 +171,5 @@
                 </div>
             </section>
         </div>
-
     </div>
-    {{-- <div class="container my-8 mx-auto px-4 md:px-6 lg:px-12">
-    <section class="mb-20 text-gray-800">
-      <div class="block shadow-lg bg-white">
-        <div class="flex flex-col">
-          <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full sm:px-6 lg:px-8">
-              <div class="overflow-hidden">
-                <table class="min-w-full mb-0">
-                  <thead class="border-b rounded-t-lg text-left">
-                    <tr>
-                      <th scope="col" class="rounded-tl-lg text-sm font-medium px-6 py-4">NO</th>
-                      <th scope="col" class="rounded-tl-lg text-sm font-medium px-6 py-4">NAMA</th>
-                      <th scope="col" class="text-sm font-medium px-6 py-4">TANGGAL</th>
-                      <th scope="col" class="text-sm font-medium px-6 py-4">INFORMASI</th>
-                      <th scope="col" class="rounded-tr-lg text-sm font-medium px-6 py-4">
-                        <a href="{{ route('late.create')}}" class="text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">TAMBAH</a>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @php
-                        $no = 1;
-                    @endphp
-                    @foreach ($lates as $item)
-                    <tr class="border-b">
-                      <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $no }}</td>
-                      <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item->student->name }}</td>
-                      <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item['date_time_late'] }}</td>
-                      <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-left text-gray-500">{{ $item['information'] }}</td>
-                      <td class="text-sm font-normal px-6 py-4 whitespace-nowrap text-right flex">
-                        <div>
-                          <a href="{{ route('late.edit', $item['id']) }}" class="font-medium text-blue-600 hover:text-blue-700 focus:text-blue-700 active:text-blue-800 transition duration-300 ease-in-out mr-4">Edit</a>
-                        </div>
-                        <form action="{{ route('late.delete', $item['id']) }}" method="post">
-                          @csrf
-                          @method('DELETE')
-                          <button type="submit" class="font-medium text-red-600 hover:text-red-700 focus:text-red-700 active:text-red-800 transition duration-300 ease-in-out">Hapus</button>
-                        </form>
-                      </td>
-                    </tr>
-                    @php
-                        $no++;
-                    @endphp
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-</table> --}}
 @endsection

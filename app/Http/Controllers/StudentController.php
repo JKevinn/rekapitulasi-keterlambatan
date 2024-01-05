@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Rombel;
 use App\Models\Rayon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -14,11 +15,16 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::All();
-        $rombels = Rombel::All();
-        $rayons = Rayon::All();
+        $students = Student::with('rayon', 'rombel')->orderBy('name', 'ASC')->simplePaginate(5);
 
-        return view('student.index', compact('students', 'rombels', 'rayons'));
+        return view('student.admin.index', compact('students'));
+    }
+
+    public function data()
+    {
+        $ps = Rayon::select('id')->where('user_id', Auth::user()->id)->get();
+        $students = Student::wherein('rayon_id', $ps)->with('rayon', 'rombel')->orderBy('name', 'ASC')->simplePaginate(5);
+        return view('student.pembimbing.index', compact('students'));
     }
 
     /**
@@ -29,7 +35,7 @@ class StudentController extends Controller
         $rombels = Rombel::All();
         $rayons = Rayon::All();
 
-        return view('student.create', compact('rombels', 'rayons'));
+        return view('student.admin.create', compact('rombels', 'rayons'));
     }
 
     /**
@@ -71,7 +77,7 @@ class StudentController extends Controller
         $rombels = Rombel::All();
         $rayons = Rayon::All();
 
-        return view('student.edit', compact('student', 'rombels', 'rayons'));
+        return view('student.admin.edit', compact('student', 'rombels', 'rayons'));
     }
 
     /**
@@ -93,7 +99,7 @@ class StudentController extends Controller
             'rayon_id' => $request->rayon,
         ]);
 
-        return redirect()->route('student.index')->with('success', 'Berhasil Mengupdate Siswa!');
+        return redirect()->route('student.admin.index')->with('success', 'Berhasil Mengubah Siswa!');
     }
 
     /**

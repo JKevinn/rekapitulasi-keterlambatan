@@ -12,18 +12,18 @@
         @csrf
         @method('PATCH')
         <div class="mb-3 row">
-            <label for="rayon" class="col-sm-2 col-form-label">Nama Rayon :</label>
-            <div class="col-sm-10">
+            <label for="rayon" class="col-sm-3 col-form-label">Nama Rayon :</label>
+            <div class="col-sm-9">
             <input type="text" class="form-control" id="rayon" name="rayon" value="{{ $rayon['rayon'] }}">
             </div>
         </div>
         <div class="mb-3 row">
-            <label for="pembina" class="col-sm-2 col-form-label">Pembimbing Rayon :</label>
-            <div class="col-sm-10">
+            <label for="pembina" class="col-sm-3 col-form-label">Pembimbing Rayon :</label>
+            <div class="col-sm-9">
                 <select name="pembina" id="pembina" class="form-control">
                     @foreach ($users as $item)
                     <option selected hidden disabled value="{{ old('rayon') }}">Pilih</option>
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                    <option value="{{ $item->id }}" {{ $item->id == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
                     @endforeach
                 </select>
             </div>

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lates', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->char('student_id', 36)->unique();
+            $table->char('student_id', 36);
             $table->foreign('student_id')->unsigned()->references('id')->on('students')->onDelete('cascade');
             $table->dateTime('date_time_late');
             $table->text('information');

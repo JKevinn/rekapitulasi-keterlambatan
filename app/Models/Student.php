@@ -33,6 +33,6 @@ class Student extends Model
     }
 
     public function late(){
-        return $this->hasOne(Late::class);
+        return $this->hasMany(Late::class);
     }
 }

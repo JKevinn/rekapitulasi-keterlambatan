@@ -19,7 +19,11 @@ class UserController extends Controller
         $user = $request->only(['email', 'password']);
 
         if(Auth::attempt($user)) {
-            return redirect('/dashboard');
+            if(Auth::user()->role == "Admin") {
+                return redirect('/dashboard');
+            } elseif(Auth::user()->role == "Pembimbing Siswa") {
+                return redirect('/dashboard-pembimbing');
+            }
         } else {
             return redirect()->back()->with('failed', 'Email dan Password tidak sesuai, Silahkan coba lagi!');
         }
@@ -36,7 +40,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::All();
+        $users = User::orderBy('name', 'ASC')->simplePaginate(5);
 
         return view('user.index', compact('users'));
     }
@@ -98,7 +102,6 @@ class UserController extends Controller
             'name' => 'required|min:3',
             'email' => 'required',
             'password' => 'required',
-            'role' => 'required'
             ]);
 
             $password = $request->password;
@@ -110,7 +113,7 @@ class UserController extends Controller
                 'role' => $request->role
             ]);
     
-            return redirect()->route('user.index')->with('success', 'Berhasil Mengedit Akun!');
+            return redirect()->route('user.index')->with('success', 'Berhasil Mengubah Akun!');
     }
 
     /**

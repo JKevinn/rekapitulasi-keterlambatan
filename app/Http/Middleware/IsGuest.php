@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsLogin
+class IsGuest
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,10 @@ class IsLogin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // return $next($request);
-        if (Auth::check()) {
-            return $next($request);
-        } else {
+        if(Auth::check()) {
             return redirect()->route('error');
+        } else {
+            return $next($request);
         }
     }
 }

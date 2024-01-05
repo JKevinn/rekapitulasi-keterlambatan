@@ -13,9 +13,8 @@ class RayonController extends Controller
      */
     public function index()
     {
-        $rayons = Rayon::All();
-        $users = User::All();
-        return view('rayon.index', compact('rayons', 'users'));
+        $rayons = Rayon::with('user')->orderBy('rayon', 'ASC')->simplePaginate(5);
+        return view('rayon.index', compact('rayons'));
     }
 
     /**
@@ -58,9 +57,9 @@ class RayonController extends Controller
      */
     public function edit($id)
     {
-        $users = User::All();
+        $users = User::where('role', 'Pembimbing Siswa')->get();
         $rayon = Rayon::where('id', $id)->first();
-
+        // return $users;
         return view('rayon.edit', compact('rayon', 'users'));
     }
 
@@ -79,7 +78,7 @@ class RayonController extends Controller
             'user_id' => $request->pembina
         ]);
 
-        return redirect()->route('rayon.index')->with('success', 'Berhasil Mengedit Rayon!');
+        return redirect()->route('rayon.index')->with('success', 'Berhasil Mengubah Rayon!');
     }
 
     /**

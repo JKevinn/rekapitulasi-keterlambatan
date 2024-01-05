@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsLogin
+class IsPembimbing
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,12 @@ class IsLogin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // return $next($request);
-        if (Auth::check()) {
+        if(Auth::user()->role == "Pembimbing Siswa")
+        {
             return $next($request);
-        } else {
-            return redirect()->route('error');
+        } else
+        {
+            return redirect('/dashboard')->with('failed', 'Anda Bukan Pembimbing Siswa!');
         }
     }
 }

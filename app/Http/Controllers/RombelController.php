@@ -12,7 +12,7 @@ class RombelController extends Controller
      */
     public function index()
     {
-        $rombels = Rombel::All();
+        $rombels = Rombel::orderBy('rombel', 'ASC')->simplePaginate(5);
         return view('rombel.index', compact('rombels'));
     }
 
@@ -72,7 +72,7 @@ class RombelController extends Controller
             'rombel' =>$request->rombel
         ]);
 
-        return redirect()->route('rombel.index')->with('success', 'Berhasil Mengedit Rombel!');
+        return redirect()->route('rombel.index')->with('success', 'Berhasil Mengubah Rombel!');
     }
 
     /**

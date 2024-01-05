@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsLogin
+class IsAdmin
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,10 @@ class IsLogin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // return $next($request);
-        if (Auth::check()) {
+        if (Auth::user()->role == "Admin") {
             return $next($request);
         } else {
-            return redirect()->route('error');
+            return redirect('/dashboard-pembimbing')->with('failed', 'Anda bukan admin!');
         }
     }
 }

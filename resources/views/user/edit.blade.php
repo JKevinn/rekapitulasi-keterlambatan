@@ -36,9 +36,10 @@
             <label for="role" class="col-sm-2 col-form-label">Role :</label>
             <div class="col-sm-10">
                 <select name="role" id="role" class="form-control">
-                <option selected hidden disabled value="{{ $user->role }}">{{ $user->role }}</option>
-                <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                <option value="Pembimbing Siswa" {{ old('role') == 'Pembimbing Siswa' ? 'selected' : '' }}>Pembimbing Siswa</option>
+                <option selected hidden disabled>Pilih</option>
+                @foreach ($users as $item)
+                <option value="{{ $item['id'] }}" {{ $item['role'] == 'Pembimbing Siswa' ? 'selected' : '' }}>Admin</option>
+                @endforeach
                 </select>
             </div>
         </div>

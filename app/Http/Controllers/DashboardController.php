@@ -16,8 +16,8 @@ class DashboardController extends Controller
         $rayon = Rayon::count();
         $rombel = Rombel::count();
         $student = Student::count();
-        $admin = User::where('role', '=', 'Admin')->count();
-        $pembimbing = User::where('role', '=', 'Pembimbing Siswa')->count();
+        $admin = User::where('role', 'Admin')->count();
+        $pembimbing = User::where('role', 'Pembimbing Siswa')->count();
 
         return view('dashboard', compact('rayon', 'rombel', 'student', 'admin', 'pembimbing'));
     }
